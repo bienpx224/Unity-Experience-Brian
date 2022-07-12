@@ -427,15 +427,11 @@ public partial class NetworkManager
         }
         Debug.LogError(requestAPi.url);
         Debug.LogError(requestAPi.body);
-        PopupLog._LogText += "= Put API : " + requestAPi.url + "\n";
-        PopupLog._LogText += "\t body : " + requestAPi.body + "\n";
         yield return request.SendWebRequest();
         if (!string.IsNullOrEmpty(request.error))
         {
             Debug.LogError("error " + request.downloadHandler.text);
-            PopupLog._LogText += "\t Error : " + request.downloadHandler.text + "\n";
-            PopupLog._LogText += "\t Msg : " + new JSONObject(request.downloadHandler.text)["message"].list[0].str + "\n";
-
+            
 
             /* Check if the request was expired -> need refresh access token */
             JSONObject requestFailure = new JSONObject(request.downloadHandler.text.ToString());
@@ -476,8 +472,6 @@ public partial class NetworkManager
             Debug.LogError(request.downloadHandler.text);
 
             string result = request.downloadHandler.text;
-            // PopupLog._LogText += "\t Response : " + result + "\n";
-            PopupLog._LogText += "\t Success \n";
             if (onComplete != null)
             {
                 onComplete.Invoke(result);
