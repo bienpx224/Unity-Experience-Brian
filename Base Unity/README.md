@@ -62,5 +62,37 @@ in is used to state that the parameter passed cannot be modified by the method.
 out is used to state that the parameter passed must be modified by the method.
 Both the ref and in require the parameter to have been initialized before being passed to a method. The out modifier does not require this and is typically not initialized prior to being used in a method.
 
+## Hướng dẫn dùng delegate
+*** Hướng dẫn dùng delegate : 
+
+Khai báo đầu game : 
+    private delegate void OnSelectHandler();
+Khai báo biến sử dụng delegate : 
+    private event OnSelectHandler _leftSelectEvent;
+Gắn call back cho event đó : 
+                _leftSelectEvent += item.OnNewSelect;
+Ở chỗ cần bắn event thì call :         _leftSelectEvent.Invoke();
+-> Func item.OnNewSelect sẽ được gọi 
+
+## Build UNITY IOS
+
+1. Switch to IOS platform.
+2. Add firebase file to asset folder
+3. Để ý thay đổi id quảng cáo admob
+4. Builder Player Setting Config, xem lại 1 lượt. 
+5. Build ra folder Xcode
+6. Nếu có lỗi, chưa có pod, mở terminal folder đó, chạy pod install
+7. Mở folder đó bằng Xcode với .xcodeproject
+8. Check lại signature, project team trong Hirearchy
+9. Build máy thật. 
+
+Compress cho Android size/4 : RGBA Compressed ETC2 8 bits
+
+
+Build android, ko cần x86 -> giảm dung lượng app
+standard assets của Unity có sẵn model, texture, … dùng sẵn
+Smart Localization giúp multi language dễ dàng. Import thôi
+
+
 
 
