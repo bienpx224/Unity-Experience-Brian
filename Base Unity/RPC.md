@@ -1,3 +1,5 @@
+# Chia sẻ về RPC : 
+
 Bạn có thể tham khảo mô hình của Valorant ở đây: https://technology.riotgames.com/news/peeking-valorants-netcode?fbclid=IwAR1VV0YPAAw_MWPtOK53AROttaoRal9m3HDPKThsTcXtULDNkszL63YJMic
 Họ áp dụng 1 số kỹ thuật như:
 .

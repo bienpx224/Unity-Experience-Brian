@@ -1,7 +1,7 @@
 # Hướng dẫn các bước Sử dụng tích hợp Asset Bundle trong Unity : 
 
 * Mục đích : Lưu trữ các asset, resource, prefabs trên server. Trong game khi nào dùng tới thì mới check và tải về, lưu trữ trong game để dùng
-* Công dụng : Giảm tải dung lượng application, giảm thời gian load game. Chỉ tải asset, res về khi nào cần dùng tới. 
+* Công dụng : Giảm tải dung lượng application, giảm thời gian load game. Chỉ tải asset, res về khi nào cần dùng tới. Khi đã tải về thì sẽ được lưu ở local, và ở các lần sau có thể check nếu có rồi thì lấy ra sử dụng, nếu chưa có thì tải mới về. 
 
 * Step : 
 - Triển khai làm như bt, đóng gói thành các prefabs. 

@@ -94,5 +94,19 @@ standard assets của Unity có sẵn model, texture, … dùng sẵn
 Smart Localization giúp multi language dễ dàng. Import thôi
 
 
+## Khác biệt giữa Class và Struct : 
+- Khi tạo Struct, sẽ mặc định sinh ra một hàm khởi tạo với đầy đủ tham số tương ứng với tất cả Stored Properties (gọi là Memberwise Initializer). Còn Class thì không có. Do đó khi tạo một class, ta sẽ phải khai báo Optional cho các thuộc tính hoặc phải tự định nghĩa một hàm khởi tạo.
+- Class có hàm Denit (khi instance chuẩn bị được giải phóng khỏi bộ nhớ). Chúng ta có thể gọi hàm này để kiểm tra khi cần thiết (đảm bảo instance đã bị huỷ để kiểm tra Retain Cycle)
+- Struct là Value types còn Class là Reference types 
+- Class là kiểu Reference Type, do đó có thể thay đổi trực tiếp giá trị của các thuộc tính qua phương thức của nó. Còn với Struct ta phải khai báo từ khoá mutating trước phương thức để làm việc đó.
+- Ngoài ra, Class hỗ trợ Type Casting, cho phép sử dụng toán tử is và as để kiểm tra hoặc ép kiểu thể hiện của một Class. Struct thì không.
+- Class có thể kế thừa, còn struct thì không 
+- Class là kiểu tham chiếu, do đó hỗ trợ các toán tử === và !== để kiểm tra các đối tượng có đang trỏ tới cùng một instance hay không.
+- Khi nào nên sử dụng struct / class
+Recommend sử dụng struct bởi:
+Struct nhanh hơn class bởi struct sử dụng method dispatch là static dispatch, class sử dụng dynamic dispatch. Ngoài ra, struct lưu dữ liệu trong stack, còn class sử dụng stack + heap -> Xử lí trong class sẽ lâu hơn.
+- Class là 1 reference type. Do đó, nếu không cẩn thận khi truyền biến sẽ dễ gây ra lỗi ngoài ý muốn ( Xem phần value type vs reference type ở trên). -> Sử dụng struct sẽ an toàn hơn.
+- Việc copy các instance là không hợp lý hoặc không cần thiết. Vậy nên Class sẽ là tuyệt vời để tham chiếu tới các đối tượng như DatabaseConnection,.. bởi vì ta chỉ cần 1 kết nối và dùng chung nó chứ ko cần phải coppy tạo ra nhiều instance ko cần thiết. 
+
 
 
