@@ -27,3 +27,7 @@
 4)Ví dụ: public static int cube(int n){ return n*n*n;}	Ví dụ: public void msg(){...}.
 
 - Tham khảo : https://viettuts.vn/java/tu-khoa-static-trong-java  
+
+## 
+- Sử dụng các kiểu uint6 ,8 16, 32 trước để tiết kiệm bộ nho trong stack.
+- Cached lại các biển toàn cục kiểu dic, array để sử dụng trong function đó, ví dụ để for các giá trị trong dic đó. 

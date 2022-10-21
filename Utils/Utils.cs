@@ -35,4 +35,12 @@ public static class Utils
         var output = JsonUtility.ToJson(obj, true);
         Debug.Log(output);
     }
+    public void LookAtTarget()
+    {
+        // For game 2D : This game Object look at the target
+        Vector3 diff = this.targetPosition - transform.parent.position;
+        diff.Normalize();
+        float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+        transform.parent.position = Quaternion.Euler(0f, 0f, rot_z + 90);
+    }
 }
