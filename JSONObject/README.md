@@ -1,7 +1,10 @@
 # Unity-Experience-Brian
 Base experience about Unity : 
 
-## JSON OBJECT : 
+## JSON : 
+- Đọc dữ liệu từ 1 file json vào 1 biến trong game : Ta cần tạo struct khai báo các kiểu của JSON đó rồi convert.
+FoodConfig[] food = JsonConvert.DeserializeObject<FoodConfig[]>(Resources.Load<TextAsset>(path).text);
+## JSON OBJECT FILE ĐÃ DỰNG SẴN : 
 
 - VD việc update thay đổi 1 trường trong array JSONObject : 
 ```c#

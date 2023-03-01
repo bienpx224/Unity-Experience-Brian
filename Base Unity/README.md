@@ -18,13 +18,6 @@ Còn pos z thì phải set qua hàm .localPosition (chỉ set pos z, bỏ qua po
 - AddForce() thường dùng để rigidbody nhận 1 lực là 1 vector()
 - rigidbody.velocity = new Vector2(x,y) : Dùng để thay đổi vận tốc theo Vector 
 
-## Animator and Animations for movements: 
-- Vào Object Player, tạo Animations và Animator: 
-- Kéo Sprites vào khung animations, chỉnh sửa timing cho phù hợp. VD cho anim Run
-- Vào Animator chỉnh transactions. Tạo transaction từ AnyState sang Idle, từ Idle sang Run. 
-- Trong mũi tên từ Idle > Run : Tắt has exit time và chỉnh Transition Duration trong Setting = 0.
-- Tạo Param để làm điều kiện chuyển đổi anim. VD tạo biến bool isRun. Sau đó trong mũi tên từ Idle > Run ta thêm điều kiện isRun = true.
-
 ## IEnumerator và IEnumerable : 
 - Trong C# có rất nhiều kiểu danh sách như Dictionary, List, ArrayList, HashSet.. và ngay kiểu dữ liệu string đều implement từ IEnumerable hoặc IEnumerable<T>.
 - Vậy IEnumerable giúp một đối tượng có thể thực hiện duyệt các phần tử bằng foreach

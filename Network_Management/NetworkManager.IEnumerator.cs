@@ -29,7 +29,7 @@ public partial class NetworkManager
     }
     public bool CheckExpireAccessToken()
     {
-        DateTime _expireAt = CountDownBuilding.GetStartDate().AddSeconds(NetworkManager.Instance.ExpireTimeAccessToken);
+        DateTime _expireAt = TimeHelper.GetStartDate().AddSeconds(1);
         long totalSecond = (long)Math.Round((_expireAt - DateTime.UtcNow).TotalSeconds);
         if (totalSecond <= 20)
         {
@@ -43,57 +43,39 @@ public partial class NetworkManager
 
     IEnumerator RefreshTokenCallAPI(Action onComplete, Action onFail)
     {
-        if (NetworkManager.Instance.IsLoginViaWallet)
-        {
-            onComplete();
+        IsWaitingRefreshToken = true;
+        String refreshToken = PlayerPrefs.GetString(GameConstants.REFRESH_TOKEN_REF, "");
 
-        }
-        else
-        {
-            IsWaitingRefreshToken = true;
-            Debug.LogWarning("Start Refresh Token");
-            String refreshToken = PlayerPrefs.GetString(GameConstants.REFRESH_TOKEN_REF, "");
-
-            yield return NetworkManager.Instance.StartCoroutine(NetworkManager.Instance.CreateWebPostRequest(APIPost.APIRefreshAccessToken(refreshToken),
-                (string response) =>
+        yield return NetworkManager.Instance.StartCoroutine(NetworkManager.Instance.CreateWebPostRequest(APIPost.APIRefreshAccessToken(refreshToken),
+            (string response) =>
+            {
+                JSONObject data = new JSONObject(response);
+                if (data && data["accessToken"] != null && data["refreshToken"] != null)
                 {
-                    JSONObject data = new JSONObject(response);
-                    if (data && data["accessToken"] != null && data["refreshToken"] != null)
-                    {
+                    NetworkManager.Instance.AccessToken = data["accessToken"].str;
+                    NetworkManager.Instance.RefreshToken = data["refreshToken"].str;
+                    NetworkManager.Instance.ExpireTimeAccessToken = (long)data["accessTokenExpireAt"].n;
 
-                        NetworkManager.Instance.AccessToken = data["accessToken"].str;
-                        NetworkManager.Instance.RefreshToken = data["refreshToken"].str;
-                        NetworkManager.Instance.ExpireTimeAccessToken = (long)data["accessTokenExpireAt"].n;
-
-                        PlayerPrefs.SetString(GameConstants.ACCESS_TOKEN_REF, NetworkManager.Instance.AccessToken);
-                        PlayerPrefs.SetString(GameConstants.REFRESH_TOKEN_REF, NetworkManager.Instance.RefreshToken);
-                        PlayerPrefs.SetString(GameConstants.EXPIRE_TOKEN_REF, NetworkManager.Instance.ExpireTimeAccessToken.ToString());
-                        IsWaitingRefreshToken = false;
-                        Debug.LogWarning("Done Refresh Token Complete ");
-                        onComplete();
-                    }
-                    else
-                    {
-                        IsWaitingRefreshToken = false;
-                        Debug.LogWarning("Done Refresh Token: " + IsWaitingRefreshToken);
-                        onFail();
-                        Debug.Log("ko co access token va refresh token : Logout");
-
-                        NetworkManager.Instance.Logout();
-                    }
-                },
-                (object objectFail) =>
+                    PlayerPrefs.SetString(GameConstants.ACCESS_TOKEN_REF, NetworkManager.Instance.AccessToken);
+                    PlayerPrefs.SetString(GameConstants.REFRESH_TOKEN_REF, NetworkManager.Instance.RefreshToken);
+                    PlayerPrefs.SetString(GameConstants.EXPIRE_TOKEN_REF, NetworkManager.Instance.ExpireTimeAccessToken.ToString());
+                    IsWaitingRefreshToken = false;
+                    onComplete();
+                }
+                else
                 {
                     IsWaitingRefreshToken = false;
-                    Debug.LogWarning("Done Refresh Token: " + IsWaitingRefreshToken);
                     onFail();
-                    Debug.Log("Call Refresh Token API failed");
-                    Debug.Log(objectFail.ToString());
-
-                    NetworkManager.Instance.Logout();
+                    // NetworkManager.Instance.Logout();
                 }
-            ));
-        }
+            },
+            (object objectFail) =>
+            {
+                IsWaitingRefreshToken = false;
+                onFail();
+                // NetworkManager.Instance.Logout();
+            }
+        ));
     }
 
     public IEnumerator CreateWebDeleteRequest(APIRequest requestAPi, System.Action<string> onComplete, System.Action<object> onFail, bool isShowToast = true)
@@ -121,8 +103,6 @@ public partial class NetworkManager
         request.SetRequestHeader("Access-Control-Expose-Headers", "ETag");
         Debug.LogError("DELETE:" + requestAPi.url);
         Debug.LogError(requestAPi.body);
-        PopupLog._LogText += "= Post API : " + requestAPi.url + "\n";
-        PopupLog._LogText += "\t body : " + requestAPi.body + "\n";
         if (_accessToken != null)
         {
             request.SetRequestHeader("Authorization", "Bearer " + _accessToken);
@@ -171,10 +151,7 @@ public partial class NetworkManager
         }
         else
         {
-            //Debug.LogError(request.downloadHandler.text);
             string result = request.downloadHandler == null ? null : request.downloadHandler.text;
-            // PopupLog._LogText += "\t Response : " + result + "\n";
-            PopupLog._LogText += "\t Success \n";
             if (onComplete != null)
             {
                 onComplete.Invoke(result);
@@ -213,8 +190,8 @@ public partial class NetworkManager
         request.SetRequestHeader("Access-Control-Expose-Headers", "ETag");
         Debug.LogError("POST:" + requestAPi.url);
         Debug.LogError(requestAPi.body);
-        PopupLog._LogText += "= Post API : " + requestAPi.url + "\n";
-        PopupLog._LogText += "\t body : " + requestAPi.body + "\n";
+        // PopupLog._LogText += "= Post API : " + requestAPi.url + "\n";
+        // PopupLog._LogText += "\t body : " + requestAPi.body + "\n";
         if (_accessToken != null)
         {
             request.SetRequestHeader("Authorization", "Bearer " + _accessToken);
@@ -229,8 +206,8 @@ public partial class NetworkManager
                 resultError = request.downloadHandler.text;
             }
             Debug.LogError("error " + resultError);
-            PopupLog._LogText += "\t Error : " + resultError + "\n";
-            PopupLog._LogText += "\t Msg : " + new JSONObject(resultError)["message"].list[0].str + "\n";
+            // PopupLog._LogText += "\t Error : " + resultError + "\n";
+            // PopupLog._LogText += "\t Msg : " + new JSONObject(resultError)["message"].list[0].str + "\n";
 
             /* Check if the request was expired -> need refresh access token */
             JSONObject requestFailure = new JSONObject(resultError);
@@ -269,7 +246,6 @@ public partial class NetworkManager
 
             string result = request.downloadHandler.text;
             // PopupLog._LogText += "\t Response : " + result + "\n";
-            PopupLog._LogText += "\t Success \n";
             if (onComplete != null)
             {
                 onComplete.Invoke(result);
@@ -280,7 +256,7 @@ public partial class NetworkManager
     public IEnumerator CreateWebRequest(string url, System.Action<string> onComplete)
     {
         UnityWebRequest request = UnityWebRequest.Get(url);
-		request.downloadHandler = new DownloadHandlerBuffer();
+        request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
         request.SetRequestHeader("Access-Control-Expose-Headers", "ETag");
 
@@ -302,31 +278,27 @@ public partial class NetworkManager
 
     public IEnumerator CreateWebGetRequest(string requestAPi, System.Action<string> onComplete, System.Action<object> onFail, bool isShowToast = true)
     {
-        if (requestAPi != APIGet.APIGetAllConfig())
+
+        if (CheckExpireAccessToken() && IsWaitingRefreshToken == false)
         {
-            if (CheckExpireAccessToken() && IsWaitingRefreshToken == false)
-            {
-                yield return StartCoroutine(
-                RefreshTokenCallAPI(
-                    () => { },
-                    () => { }
-                )
-                );
-            }
-            if (IsWaitingRefreshToken == true)
-            {
-                yield return new WaitUntil(() => IsWaitingRefreshToken == false);
-            }
+            yield return StartCoroutine(
+            RefreshTokenCallAPI(
+                () => { },
+                () => { }
+            )
+            );
+        }
+        if (IsWaitingRefreshToken == true)
+        {
+            yield return new WaitUntil(() => IsWaitingRefreshToken == false);
         }
         UnityWebRequest request = UnityWebRequest.Get(requestAPi);
-		request.downloadHandler = new DownloadHandlerBuffer();
+        request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
         request.SetRequestHeader("Access-Control-Expose-Headers", "ETag");
         Debug.LogError("GET:" + requestAPi);
-        if (!requestAPi.Contains("/harvest"))
-        {
-            PopupLog._LogText += "= Get API : " + requestAPi + "\n";
-        }
+        // PopupLog._LogText += "= Get API : " + requestAPi + "\n";
+
         if (_accessToken != null && requestAPi != APIGet.APIGetAllConfig())
         {
             request.SetRequestHeader("Authorization", "Bearer " + _accessToken);
@@ -335,11 +307,8 @@ public partial class NetworkManager
         if (!string.IsNullOrEmpty(request.error))
         {
             Debug.LogError("error " + request.downloadHandler.text);
-            if (!requestAPi.Contains("/harvest"))
-            {
-                PopupLog._LogText += "\t Error : " + request.downloadHandler.text + "\n";
-                PopupLog._LogText += "\t Msg : " + new JSONObject(request.downloadHandler.text)["message"].list[0].str + "\n";
-            }
+            // PopupLog._LogText += "\t Error : " + request.downloadHandler.text + "\n";
+            // PopupLog._LogText += "\t Msg : " + new JSONObject(request.downloadHandler.text)["message"].list[0].str + "\n";
 
             /* Check if the request was expired -> need refresh access token */
             JSONObject requestFailure = new JSONObject(request.downloadHandler.text.ToString());
@@ -385,10 +354,6 @@ public partial class NetworkManager
             string result = request.downloadHandler.text;
             Debug.LogError(request.downloadHandler.text);
             // PopupLog._LogText += "\t Response : " + result + "\n";
-            if (!requestAPi.Contains("/harvest"))
-            {
-                PopupLog._LogText += "\t Success \n";
-            }
             if (onComplete != null)
             {
                 onComplete.Invoke(result);
@@ -416,7 +381,7 @@ public partial class NetworkManager
 
         byte[] payload = System.Text.Encoding.UTF8.GetBytes(requestAPi.body);
         UnityWebRequest request = UnityWebRequest.Put(requestAPi.url, payload);
-		request.downloadHandler = new DownloadHandlerBuffer();
+        request.downloadHandler = new DownloadHandlerBuffer();
         if (isPatch)
             request.method = "PATCH";
         request.SetRequestHeader("Content-Type", "application/json");
@@ -431,7 +396,7 @@ public partial class NetworkManager
         if (!string.IsNullOrEmpty(request.error))
         {
             Debug.LogError("error " + request.downloadHandler.text);
-            
+
 
             /* Check if the request was expired -> need refresh access token */
             JSONObject requestFailure = new JSONObject(request.downloadHandler.text.ToString());

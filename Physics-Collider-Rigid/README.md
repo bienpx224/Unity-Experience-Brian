@@ -4,6 +4,7 @@
 - Compare : https://viblo.asia/p/so-sanh-giua-charater-controller-va-rigid-body-trong-unity3d-phan-2-bWrZn0oY5xw 
 - RigidBody sẽ phản ứng rất chính xác và thậm chí sử dụng những tính chất vật lý để tính toán chính xác nhất. Trong khi đó CharacterController sẽ ít chặt chẽ hơn, chúng ta có thể tự động leo qua những gờ dốc thấp (tùy theo tham số) mà không cần xử lý gì.
 - Rigidbody cung cấp cho chúng ta rất nhiều tương tác vật lý mà Character Controller không có, vì vậy nếu dùng Character Controller thì chúng ta sẽ cần phải code nhiều hơn cho cùng một tính năng. => ít tính năng dùng Character Controller.
+- Character Controller là dùng cho 3D. 
 ## Rigibody : 
 - Mass – Khối lượng của vật, không nên đặt chỉ số này cao hơn hoặc thấp hơn 100 lần so với các rigidbody khác.
 - Drag – Sức cản không khí sẽ ảnh hưởng đến object thế nào, 0 nghĩa là hoàn toàn không có sức cản, vô tận sẽ khiến cho object ngừng di chuyển.
@@ -13,6 +14,7 @@
 - Interpolate – Dùng để điều chỉnh sự va chạm, độ va chạm có thể nhạy hơn tùy từng trường hợp.
 - Collision Detection – Dùng để ngăn chặn các object di chuyển quá nhanh xuyên qua các object khác mà không bị va chạm, như khi viên đạn di chuyển nhanh quá, và vượt qua object khác trước khi va chạm được update.
 - Ngoài ra RigidBody có thể được áp dụng lực trong code với function AddForce()
+- Chỉnh trong Constrains : Freeze Rotation để Nhân vật ko bị ngả nghiêng. (tick X and Z : Thông thường là vậy).
 
 - 4 cách để tác dụng lực vào một Rigidbody: 
     + Force: liên tục và phụ thuộc vào khối lượng

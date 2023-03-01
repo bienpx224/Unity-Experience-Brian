@@ -28,3 +28,15 @@ Mình dùng giải thuật cho 2 mục đích chính:
 Khi cần thương mại hoá thì dùng bundle cho người chơi tải về sẽ
 - Tiết kiệm được tiền quảng cáo (Cùng 1 game đó thì nhẹ hơn = rẻ hơn)
 - Trông hấp dẫn hơn với người dùng, vì nhìn game 50 MB sẽ có cảm giác muốn tải hơn game 500 MB. Khi nào chuẩn bị cần tới bộ bundle nào thì tải nó về sau. Ví dụ ng chơi chơi tới màn 5 thì mới tải bundle cho màn 10 -> 20
+
+## Optimize Sprite trong 2D game : 
+OPTIMIZATION TIPS
+ Enable Texture Compression for all sprites to minimize build size
+ Use Crunch Compression for all sprites to minimize build size
+ Use Sprite Mode > Mesh Type = Tight because all sprites are 512x512 px and are not cropped
+ Set Sprite Mode > Extrude Edges = 2 or more if you have crop artefacts
+ Use Packing Tags for sprite groups to improve performance (legacy feature, but preferred)
+ Enable Legacy Sprite Packer from Editor settings
+ Refer to Unity docs for details about Texture Compression and Packing Tags
+ Consider to use Sprite Atlas (replacement for Legacy Sprite Packer)
+ Read more about sprite packing in Sprite Atlas (Packing) section below

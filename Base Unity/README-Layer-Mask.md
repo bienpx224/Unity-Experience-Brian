@@ -13,6 +13,7 @@
 
 - VD trong TH kiểm tram Raycast có trúng mục tiêu là layer Enemy hay ko : 
 ``` RaycastHit2D hit = Physics2D.Linecast(lineCastFrom, lineCastTo, 1 << LayerMask.NameToLayer("Enemy")); ``` 
-Ở đây, hàm LayerMask.NameToLayer("Enemy") sẽ trả về giá trị integer trong khoản [0..31], nhưng cái ta cần truyền vào là bitmask. Vậy nên ta cần chuyển gtri integer đó thành bitmask tương ứng. => 1 << 8 sẽ thành 1 0000 0000
+Ở đây, hàm LayerMask.NameToLayer("Enemy") sẽ trả về giá trị integer trong khoản [0..31], nhưng cái ta cần truyền vào là bitmask. Vậy nên ta cần chuyển gtri integer đó thành bitmask tương ứng. => 1 << 8 sẽ thành 
+1 0000 0000
 => 1 0000 0000 là giá trị bitmask của Layer Enemy.  => 2^8 = 768 => 768 là giá trị của layer. 
 - Chốt : ta có 3 giá trị ở Layer để lưu ý là : Gía trị Layer Maks kiểu integer [0.31], Giá trị bit mask : 0000 0000... (bao gồm 32 bit) và giá trị Layer là giá trị của layer tính ra từ bitmask (2^x)
