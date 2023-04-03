@@ -55,18 +55,27 @@ in is used to state that the parameter passed cannot be modified by the method.
 out is used to state that the parameter passed must be modified by the method.
 Both the ref and in require the parameter to have been initialized before being passed to a method. The out modifier does not require this and is typically not initialized prior to being used in a method.
 
+## Phân biệt giữa event, delegate, action, unity event : 
+- Link refers : https://gamedevbeginner.com/events-and-delegates-in-unity/
+
 ## Hướng dẫn dùng delegate
 *** Hướng dẫn dùng delegate : 
 
 Khai báo đầu game : 
-    private delegate void OnSelectHandler();
+    public delegate void OnSelectHandler();
 Khai báo biến sử dụng delegate : 
-    private event OnSelectHandler _leftSelectEvent;
+    public OnSelectHandler _leftSelectEvent;
 Gắn call back cho event đó : 
                 _leftSelectEvent += item.OnNewSelect;
 Ở chỗ cần bắn event thì call :         _leftSelectEvent.Invoke();
 -> Func item.OnNewSelect sẽ được gọi 
 
+## Hướng dẫn sử dụng Event Manager để quản lý, publishing và listerner event trong game : 
+- Link : http://bernardopacheco.net/using-an-event-manager-to-decouple-your-game-in-unity
+- Bản chất : Tạo 1 Singleton Event Manager để quản lý list các event, subscribe và trigger các event. 
+- Listening và Trigger các event dựa theo event Name được định nghĩa là enum để dễ quản lý. 
+- Xem file EventManager.cs template ở cùng folder này. 
+- Các param của các event được truyền dưới dạng Dictionary<string, object>, khi muốn lấy ra ta cần ép kiểu để chuẩn chỉnh hơn. 
 ## Build UNITY IOS
 
 1. Switch to IOS platform.

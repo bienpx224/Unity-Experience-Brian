@@ -11,7 +11,7 @@
 - Còn tất nhiên nếu ko config gì hết (render Everything) thì CullingMask sẽ là (-1) :
 11111111 11111111 11111111 11111111
 
-- VD trong TH kiểm tram Raycast có trúng mục tiêu là layer Enemy hay ko : 
+- VD trong TH kiểm tra Raycast có trúng mục tiêu là layer Enemy hay ko : 
 ``` RaycastHit2D hit = Physics2D.Linecast(lineCastFrom, lineCastTo, 1 << LayerMask.NameToLayer("Enemy")); ``` 
 Ở đây, hàm LayerMask.NameToLayer("Enemy") sẽ trả về giá trị integer trong khoản [0..31], nhưng cái ta cần truyền vào là bitmask. Vậy nên ta cần chuyển gtri integer đó thành bitmask tương ứng. => 1 << 8 sẽ thành 
 1 0000 0000

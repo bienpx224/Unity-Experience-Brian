@@ -1,5 +1,27 @@
 # Tổng quan 1 chút về OOP : 
 
+## Khác biệt giữa Virtual và Abstract trong Abstract Class trong OOP : 
+Giống nhau : 
+- Từ khóa Virtual hoặc Abstract (bên lớp cơ sở) và Override (trên lớp dẫn xuất) hỗ trợ tạo đa hình (Polymorphism) cho các phương thức (Method) của object (1 trong những điểm mạnh của OOP).
+
+Sự khác nhau:
+- Điểm đầu tiên là Virtual cho phép lớp Con không nhất thiết phải tạo Override cho method Virtual ở lớp Cha. Ngược lại Abstract thì bắt buộc.
+- Thứ 2 là cách khai báo, method Virtual có các hàm bên trong còn Abstract thì tuyệt tối không.
+- Thứ 3 là method abstract phải nằm trong class abstract như bên dưới.
+
+``` c# 
+   Abstract Class Cha 
+   {
+   public virtual void AAA() { }
+   public abstract void BBB() ;
+   }
+
+   Class Con : Cha
+   {
+   public override void AAA() { } // có thể không cần hàm này 
+   public override void BBB() { } // buộc có.
+   }
+```
 ## Khác biệt giữa Class và Struct : 
 - Khi tạo Struct, sẽ mặc định sinh ra một hàm khởi tạo với đầy đủ tham số tương ứng với tất cả Stored Properties (gọi là Memberwise Initializer). Còn Class thì không có. Do đó khi tạo một class, ta sẽ phải khai báo Optional cho các thuộc tính hoặc phải tự định nghĩa một hàm khởi tạo.
 - Class có hàm Denit (khi instance chuẩn bị được giải phóng khỏi bộ nhớ). Chúng ta có thể gọi hàm này để kiểm tra khi cần thiết (đảm bảo instance đã bị huỷ để kiểm tra Retain Cycle)
@@ -46,7 +68,7 @@ Gồm 4 nguyên lý cơ bản là :
 
 * Abstract : 
 - Abstract class : trong abstract class có 2 loại method:
- + abstract method (là method rỗng không thực hiện gì)
+ + abstract method (là method rỗng không thực hiện gì) protected abstract void Work();
  + method thường (là vẫn có logic trả về data hoặc thực thi hành động nào đó, nó được sử dụng cho mục đích dùng chung)
 - Các lớp chỉ có thể kế thừa một Abstract class.
 - Hướng đến tính năng và những tính năng có thực thi được sử dụng làm hàm chung cho các class extend.
