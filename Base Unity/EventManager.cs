@@ -8,11 +8,11 @@ This script is set to DontDestroyOnLoad, i.e., it won’t be destroyed when relo
 
 === HOW TO USE === 
 - No parameter:
-EventManager.TriggerEvent("gameOver", null);
+EventManager.Instance.TriggerEvent("gameOver", null);
 - 1 parameter:
-EventManager.TriggerEvent("gamePause", new Dictionary<string, object> { { "pause", true } });
+EventManager.Instance.TriggerEvent("gamePause", new Dictionary<string, object> { { "pause", true } });
 - 2 or more parameters:
-EventManager.TriggerEvent("addReward", 
+EventManager.Instance.TriggerEvent("addReward", 
   new Dictionary<string, object> {
     { "name", "candy" },
     { "amount", 5 } 
@@ -20,7 +20,7 @@ EventManager.TriggerEvent("addReward",
 
 === How an event is published === 
 void OnTriggerEnter2D(Collider2D other) {
-    EventManager.TriggerEvent("addCoins", new Dictionary<string, object> { { "amount", 1 } });
+    EventManager.Instance.TriggerEvent("addCoins", new Dictionary<string, object> { { "amount", 1 } });
   }
 
 === How an event is consumed example === 
@@ -28,49 +28,26 @@ public class Consumer : MonoBehaviour {
   private int coins;
 
   void OnEnable() {
-    EventManager.StartListening("addCoins", OnAddCoins);
+    EventManager.Instance.StartListening("addCoins", OnAddCoins);
   }
 
   void OnDisable() {
-    EventManager.StopListening("addCoins", OnAddCoins);
+    EventManager.Instance.StopListening("addCoins", OnAddCoins);
   }
   
-  void OnAddCoins(Dictionary<string, object> message) {
-    var amount = (int) message["amount"];
+  void OnAddCoins(Dictionary<string, object> msg) {
+    var amount = (int) msg["amount"];
     coins += amount;
   }
 }
 */
-public class EventManager : MonoBehaviour
+public class EventManager : Singleton<EventManager>
 {
     private Dictionary<EventName, Action<Dictionary<string, object>>> eventDictionary;
 
-    private static EventManager eventManager;
-
-    public static EventManager Instance
-    {
-        get
-        {
-            if (!eventManager)
-            {
-                eventManager = FindObjectOfType(typeof(EventManager)) as EventManager;
-
-                if (!eventManager)
-                {
-                    Debug.LogError("There needs to be one active EventManager script on a GameObject in your scene.");
-                }
-                else
-                {
-                    eventManager.Init();
-
-                    //  Sets this to not be destroyed when reloading scene
-                    DontDestroyOnLoad(eventManager);
-                }
-            }
-            return eventManager;
-        }
+    void Start(){
+        Init();
     }
-
     void Init()
     {
         if (eventDictionary == null)
@@ -79,37 +56,36 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public static void StartListening(EventName eventName, Action<Dictionary<string, object>> listener)
+    public void StartListening(EventName eventName, Action<Dictionary<string, object>> listener)
     {
         Action<Dictionary<string, object>> thisEvent;
 
-        if (Instance.eventDictionary.TryGetValue(eventName, out thisEvent))
+        if (eventDictionary.TryGetValue(eventName, out thisEvent))
         {
             thisEvent += listener;
-            Instance.eventDictionary[eventName] = thisEvent;
+            eventDictionary[eventName] = thisEvent;
         }
         else
         {
             thisEvent += listener;
-            Instance.eventDictionary.Add(eventName, thisEvent);
+            eventDictionary.Add(eventName, thisEvent);
         }
     }
 
-    public static void StopListening(EventName eventName, Action<Dictionary<string, object>> listener)
+    public void StopListening(EventName eventName, Action<Dictionary<string, object>> listener)
     {
-        if (eventManager == null) return;
         Action<Dictionary<string, object>> thisEvent;
-        if (Instance.eventDictionary.TryGetValue(eventName, out thisEvent))
+        if (eventDictionary.TryGetValue(eventName, out thisEvent))
         {
             thisEvent -= listener;
-            Instance.eventDictionary[eventName] = thisEvent;
+            eventDictionary[eventName] = thisEvent;
         }
     }
 
-    public static void TriggerEvent(EventName eventName, Dictionary<string, object> message)
+    public void TriggerEvent(EventName eventName, Dictionary<string, object> message)
     {
         Action<Dictionary<string, object>> thisEvent = null;
-        if (Instance.eventDictionary.TryGetValue(eventName, out thisEvent))
+        if (eventDictionary.TryGetValue(eventName, out thisEvent))
         {
             thisEvent.Invoke(message);
         }
@@ -122,4 +98,5 @@ public enum EventName
     PlayerDead,
     ClearRoom,
     ClearLevel,
+    ComboAttackCount
 }
