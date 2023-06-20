@@ -22,6 +22,10 @@ Sự khác nhau:
    public override void BBB() { } // buộc có.
    }
 ```
+
+## Sử dụng virtual và override để ghi đè hoặc sử dụng phương thức cha: 
+- Class cha khai báo virtual func. 
+- Class con khai báo override func đó, và trong func có thể sử dụng base.func cha để gọi thực thi hàm cha.
 ## Khác biệt giữa Class và Struct : 
 - Khi tạo Struct, sẽ mặc định sinh ra một hàm khởi tạo với đầy đủ tham số tương ứng với tất cả Stored Properties (gọi là Memberwise Initializer). Còn Class thì không có. Do đó khi tạo một class, ta sẽ phải khai báo Optional cho các thuộc tính hoặc phải tự định nghĩa một hàm khởi tạo.
 - Class có hàm Denit (khi instance chuẩn bị được giải phóng khỏi bộ nhớ). Chúng ta có thể gọi hàm này để kiểm tra khi cần thiết (đảm bảo instance đã bị huỷ để kiểm tra Retain Cycle)

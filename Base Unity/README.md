@@ -1,6 +1,10 @@
 # Unity-Experience-Brian
 Base experience about Unity : 
 
+## Start, OnEnable và Awake : 
+- Awake dc gọi đầu tiên, và chỉ gọi 1 lần khi Spawn Object. 
+- TIếp đến sẽ gọi OnEnable, sau đó mới gọi đến Start.
+- Tuy nhiên hàm Start sẽ chỉ được gọi 1 lần đầu khi Spawn Object. Còn hàm OnEnable thì sẽ được gọi mỗi khi Object được enable lên. 
 ## Canvas : 
 - Trong Canvas > Canvas Scaler nên chọn Scale with Screen Size. 
 
