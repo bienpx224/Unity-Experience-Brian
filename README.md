@@ -42,3 +42,7 @@ Linker command failed with exit code 1 (use -v to see invocation)"
 -> Khi mở dự án bằng Xcode, ta phải config trong Xcode, ở mọi nơi Unity-Iphone hoặc Pods : Trong Build Settings , tìm Enable Bitcode và chọn NO. 
 -> Sau đó thì mình đã build được và không có lỗi. 
 Có vẻ như " The BITCODE must be turned off everywhere since iOS 16: " 
+
+## Unity - Android required API 33 for Android's build. 
+- To build in API 33, In Publishing Setting, under Minify section, enable "Use R8" and make build with target api set to 33. For more information on Minify, can check, https://forum.unity.com/threads/wha...-should-i-change-it-before-publishing.870061/
+- If not, you'll get error when trying build game. 

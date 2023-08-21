@@ -74,6 +74,16 @@ Gắn call back cho event đó :
 Ở chỗ cần bắn event thì call :         _leftSelectEvent.Invoke();
 -> Func item.OnNewSelect sẽ được gọi 
 
+## Làm việc với WorldToViewportPoint : 
+- cam.WorldToViewportView(object) là hàm để chuyển từ vị trí world position sang Vector3 vị trí của object đó trong Camera View. Góc trái bên dưới cùng sẽ là Vector3(0,0,0) -> ở giữa là (0.5, 0.5, 0). Nếu nằm trong viewport thì giá trị sẽ dao động trong [0, 1]
+- VD : Để kiểm tra gameObject nằm trong hay ngoài camera : 
+```
+// Kiểm tra nếu enemy nằm trong hay ngoài camera
+        Vector3 enemyViewportPos = mainCamera.WorldToViewportPoint(transform.position);
+        bool isEnemyVisible = enemyViewportPos.x >= 0 && enemyViewportPos.x <= 1 && enemyViewportPos.y >= 0 && enemyViewportPos.y <= 1;
+```
+- cam.ViewportToWorldPoint : CHuyển đổi position vị trí từ viewport trong camera thành world position. 
+
 ## Hướng dẫn sử dụng Event Manager để quản lý, publishing và listerner event trong game : 
 - Link : http://bernardopacheco.net/using-an-event-manager-to-decouple-your-game-in-unity
 - Bản chất : Tạo 1 Singleton Event Manager để quản lý list các event, subscribe và trigger các event. 
