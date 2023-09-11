@@ -68,7 +68,7 @@ Gồm 4 nguyên lý cơ bản là :
 ### Tính trừu tượng - Abstraction : 
 - Là định nghĩa các tính chất hành vi 1 cách trừu tượng. 
 - khi khai báo một lớp có từ khóa abstract thì nó là lớp trừu tượng. Đã là lớp trừu tượng thì nó không được dùng để khởi tạo đối tượng trực tiếp mà nó chỉ làm lớp cơ sở kế thừa bởi lớp khác.
-- Trong lớp trừu tượng, còn có thể khai báo phương thức trừu tượng với từ khóa abstract, phương thức này không có thân (chỉ có tên - tham số), nó yêu cầu lớp kế thừa bắt buộc phải nạp chồng (overrid)
+- Trong lớp trừu tượng, còn có thể khai báo phương thức trừu tượng với từ khóa abstract, phương thức này không có thân (chỉ có tên - tham số), nó yêu cầu lớp kế thừa bắt buộc phải nạp chồng (override)
 
 * Abstract : 
 - Abstract class : trong abstract class có 2 loại method:

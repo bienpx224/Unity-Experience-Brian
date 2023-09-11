@@ -46,3 +46,19 @@ Có vẻ như " The BITCODE must be turned off everywhere since iOS 16: "
 ## Unity - Android required API 33 for Android's build. 
 - To build in API 33, In Publishing Setting, under Minify section, enable "Use R8" and make build with target api set to 33. For more information on Minify, can check, https://forum.unity.com/threads/wha...-should-i-change-it-before-publishing.870061/
 - If not, you'll get error when trying build game. 
+
+## Build Android Target 31 trở lên gặp lỗi : 
+![Alt text](image-error-build-publish-1.png)
+```
+* What went wrong:
+Execution failed for task ':launcher:transformClassesAndResourcesWithR8ForRelease'.
+> java.lang.UnsupportedOperationException (no error message)
+```
+Hoặc lỗi khi upload .aab lên Google Store. 
+- Đọc qua hướng giải quyết ở đây [Link](https://developers.google.com/ar/develop/unity-arf/android-12-build#workaround)
+- Trong Project Setting > Publishing Settings : ấn sử dụng custom Main Manifest, Gradle template, Launcher... và làm theo hướng dẫn : 
+Xoá comment, thêm android:exported="true"....
+- Khi nhập sai pasword Keystore cũng báo lỗi. 
+
+- Xoá folder library đi, khởi động lại Unity. Build lại. OK. Hoặc có thể thử chạy Android Resolver rồi chạy thử xem được ko. 
+

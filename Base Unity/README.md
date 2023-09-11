@@ -5,6 +5,7 @@ Base experience about Unity :
 - Awake dc gọi đầu tiên, và chỉ gọi 1 lần khi Spawn Object. 
 - TIếp đến sẽ gọi OnEnable, sau đó mới gọi đến Start.
 - Tuy nhiên hàm Start sẽ chỉ được gọi 1 lần đầu khi Spawn Object. Còn hàm OnEnable thì sẽ được gọi mỗi khi Object được enable lên. 
+- Start is called before the first Awake call just when the frame Script component is enabled. Just like Awake, Start is called only once. However, Awake is called when the object is initialized, regardless of whether the Script component is turned on or off. 
 ## Canvas : 
 - Trong Canvas > Canvas Scaler nên chọn Scale with Screen Size. 
 

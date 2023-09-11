@@ -93,3 +93,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 /mono_crash.mem.24182.1.blob
+/Assets/0_SwordGame/Resources/userdata.json
+/Assets/0_SwordGame/Resources/gamedata.json

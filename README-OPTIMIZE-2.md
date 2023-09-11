@@ -85,6 +85,7 @@ Sử dụng cache sẽ giúp giảm thời gian tìm kiếm và truy xuất dữ
 CÁCH 3: Sử dụng pooling cho các đối tượng tạo ra động
 Sử dụng pooling cho các đối tượng tạo ra động trong Unity C# là một trong những cách tiếp cận tối ưu mà bạn có thể sử dụng để giảm chi phí tạo ra và hủy đối tượng mỗi khi chúng cần thiết. Đây là một quá trình được thực hiện theo các bước sau:
 1. Tạo một class pool: Bạn cần tạo một class pool để quản lý các đối tượng cần tạo ra và hủy.
+```c#
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -127,6 +128,7 @@ GameObject.Destroy(toReturn);
 }
 }
 }
+```
 2. Tạo một class pool item: Bạn cần tạo một class pool item để giữ tham chiếu đến pool của đối tượng.
 using UnityEngine;
 
@@ -143,8 +145,9 @@ CÁCH 4: Sử dụng coroutines thay vì Update
 2. Thực hiện các tác vụ trong coroutine: Trong coroutine, bạn có thể thực hiện bất kỳ tác vụ nào mà bạn muốn, bao gồm cả chờ cho một số thời gian bằng cách sử dụng hàm yield return new WaitForSeconds(time).
 3. Sử dụng coroutines: Khi bạn muốn thực hiện một tác vụ trong một coroutine, hãy gọi hàm StartCoroutine() với đối số là delegate hoặc tên của hàm tương ứng.
 Với việc sử dụng coroutines, bạn có thể tách biệt các tác vụ khác nhau và chạy chúng theo thứ tự của mình, giúp giảm sự rối mắc và tăng tốc độ chạy của game. Điều này đặc biệt hữu ích khi bạn cần chạy nhiều tác vụ song song hoặc khi bạn muốn chạy một tác vụ trong một thời gian nhất định.
-Delegate là một kiểu dữ liệu trong C# mà cho phép bạn tạo một tham chiếu đến một hàm. Nó giống như một biến, nhưng nó chứa tham chiếu đến một hàm cụ thể. Delegate cho phép bạn truyền một hàm như một đối số cho một hàm khác hoặc trả về một hàm như kết quả của một hàm. Điều này giúp cho việc viết mã trở nên linh hoạt và dễ dàng hơn, giúp bạn tách rời logic của một hàm ra khỏi hàm gọi nó.
+- Delegate là một kiểu dữ liệu trong C# mà cho phép bạn tạo một tham chiếu đến một hàm. Nó giống như một biến, nhưng nó chứa tham chiếu đến một hàm cụ thể. Delegate cho phép bạn truyền một hàm như một đối số cho một hàm khác hoặc trả về một hàm như kết quả của một hàm. Điều này giúp cho việc viết mã trở nên linh hoạt và dễ dàng hơn, giúp bạn tách rời logic của một hàm ra khỏi hàm gọi nó.
 Ví dụ về delegate:
+```c#
 delegate int DelegateExample(int x, int y);
 class Program
 {
@@ -167,10 +170,11 @@ Debug.Log (delegateMultiply(10, 20));
 Console.ReadLine();
 }
 }
-
+```
 Ví dụ tiếp theo về
 Trong ví dụ trên, chúng ta định nghĩa một delegate với tên DelegateExample với 2 tham số int x và int y. Sau đó, chúng ta tạo 2 hàm Add và Multiply sử dụng delegate DelegateExample. Cuối cùng, chúng ta tạo 2 đối tượng delegate delegateAdd và delegateMultiply và gán cho chúng 2 hàm Add và Multiply. Khi gọi delegate, nó sẽ gọi hàm được gán cho nó.
 Ví dụ tiếp theo về delegate:
+```c#
 using UnityEngine;
 public class ExampleClass : MonoBehaviour
 {
@@ -192,6 +196,7 @@ MyDelegate myDelegate = new MyDelegate(MyFunction);
 myDelegate(10);
 }
 }
+```
 Trong ví dụ trên, chúng ta tạo một delegate có tên MyDelegate với kiểu trả về là void và một tham số là int. Sau đó, chúng ta tạo một hàm MyFunction mà delegate có thể trỏ đến. Trong hàm Start, chúng ta tạo một instance của delegate trỏ đến hàm MyFunction và gọi hàm MyFunction bằng delegate.
 Kết quả từ chương trình sẽ in ra: "MyFunction called with num: 10".
 
@@ -199,6 +204,7 @@ CÁCH 5: Sử dụng multithreading cho các tác vụ tải dữ liệu
 Sử dụng multithreading là một kỹ thuật tốt để tải dữ liệu trong Unity, đặc biệt là khi tải dữ liệu có dung lượng lớn hoặc tải dữ liệu từ mạng. Khi tải dữ liệu từ mạng, nếu chỉ sử dụng một luồng, việc tải dữ liệu sẽ gây ra tình trạng blocking và gián đoạn các tác vụ khác trong game.
 Để sử dụng multithreading để tải dữ liệu, bạn có thể sử dụng Thread hoặc Task từ thư viện System.Threading trong C#. Bạn có thể tạo một luồng mới để tải dữ liệu và gọi hàm Join để chờ luồng tải dữ liệu hoàn tất.
 Ví dụ:
+```c#
 using System.Threading;
 using UnityEngine;
 
@@ -226,6 +232,7 @@ private void MainThreadUpdate()
 // ...
 }
 }
+```
 Multithreading có thể giúp bạn tải dữ liệu một cách hiệu quả và tránh làm chậm hoạt động của ứng dụng của bạn. Cách thức sử dụng multithreading trong Unity C# như sau:
 1. Tạo một luồng mới: Bạn có thể tạo một luồng mới bằng cách sử dụng lớp Thread. Bạn có thể chỉ định một phương thức nào đó để chạy trên luồng mới này.
 2. Sử dụng Async/Await: Bạn có thể sử dụng từ khoá Async và Await để tải dữ liệu trong một luồng riêng biệt và đợi cho nó hoàn thành trước khi tiếp tục với các tác vụ khác.
