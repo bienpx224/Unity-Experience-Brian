@@ -62,3 +62,14 @@ Xoá comment, thêm android:exported="true"....
 
 - Xoá folder library đi, khởi động lại Unity. Build lại. OK. Hoặc có thể thử chạy Android Resolver rồi chạy thử xem được ko. 
 
+## Build hiện cảnh bảo useR8 deprecated - Xoá nó đi : 
+- Trong Player Publishing Settings : Tích chọn Custom Launch Gradle Template và bỏ tích chọn Use R8 trong Minify. 
+- sau đó vào file custom đó, comment dòng useR8 lại là được. 
+
+
+## Build Unity 2021.3.13 với Admob 8.6 bị lỗi : 
+- Đã thử nhiều cách nhưng chưa được. 
+- Thử các bước sau : 
+    + Cài đặt lại theo thứ tự : Admob -> Firebase (AppCheck, Analysis, Message) -> Reimport all. 
+    + Thực hiện theo lưu ý trên trang Google Admob - thay đổi Gradle (link)[https://developers.google.com/admob/unity/gradle]
+    + Sau đó build lại là được. 
