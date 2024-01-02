@@ -54,7 +54,7 @@ Có vẻ như " The BITCODE must be turned off everywhere since iOS 16: "
 Execution failed for task ':launcher:transformClassesAndResourcesWithR8ForRelease'.
 > java.lang.UnsupportedOperationException (no error message)
 ```
-Hoặc lỗi khi upload .aab lên Google Store. 
+Hoặc lỗi khi upload .aab lên Google Store. Build
 - Đọc qua hướng giải quyết ở đây [Link](https://developers.google.com/ar/develop/unity-arf/android-12-build#workaround)
 - Trong Project Setting > Publishing Settings : ấn sử dụng custom Main Manifest, Gradle template, Launcher... và làm theo hướng dẫn : 
 Xoá comment, thêm android:exported="true"....
@@ -73,3 +73,23 @@ Xoá comment, thêm android:exported="true"....
     + Cài đặt lại theo thứ tự : Admob -> Firebase (AppCheck, Analysis, Message) -> Reimport all. 
     + Thực hiện theo lưu ý trên trang Google Admob - thay đổi Gradle (link)[https://developers.google.com/admob/unity/gradle]
     + Sau đó build lại là được. 
+
+## Build WebGL : Interacting with JS Web Client : 
+- Error when build : Error building WebGL in 2021.2.5f1 - ebug_WebGL_wasm\build.js: undefined symbol
+
+- Solved : 
+For those wondering how to use the '-s ERROR_ON_UNDEFINED_SYMBOLS=0' argument:
+Go to ProjectSettings folder and open ProjectSettings.asset
+Search for webGLEmscriptenArgs
+Add the argument in front of it, like webGLEmscriptenArgs: -s ERROR_ON_UNDEFINED_SYMBOLS=0
+That solved the issue for me
+
+
+## Build WebGL Release - Brotli : 
+- Got Error : I get this error when executing my webgl build in Chrome.
+
+Unable to parse Build/SampleScene.framework.js.br!
+If using custom web server, verify that web server is sending .br files with HTTP Response Header "Content-Encoding: br". Brotli compression may not be supported over HTTP connections. Migrate your server to use HTTPS.
+
+- Resolved : 
+To fix this issue go to files>build settings>player settings>Publishing settings and from there just turn on "Decompression Fallback" option and create a webGL build again and it should work properly over local server or any server you will upload your project

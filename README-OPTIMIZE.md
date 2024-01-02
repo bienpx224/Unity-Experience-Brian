@@ -1,5 +1,24 @@
 # Tổng hợp những kinh nghiệm Chia sẻ kĩ thuật, Tối ưu hiệu năng (Optimize) :
 
+## Unity WebGL Knowledge : 
+- Document hay về việc triển khai Unity WebGL : bao gồm create, build, interact, custom .. : https://unity.com/how-to/profile-optimize-webgl-build#create-build
+
+- React and Unity Interacting : NPM react-unity-webgl docs : https://react-unity-webgl.dev/docs/api/send-message
+
+## Build giảm dung lượng : 
+- Giảm Quality 
+- Sử dụng Sprite Atlas, size ảnh chia hết cho 4, compress tất cả ảnh xuống chất lượng phù hợp 
+- Build Release, disable tất cả log đi sẽ giảm dung lượng đi rất nhiều. 
+- Kiểm tra Editor Log để xem thắt cổ chai ở đâu, dung lượng các file như nào. 
+- Trên các thiết bị Mobile thì sử dụng ASTC 8 bit hoặc RGB Compress ATC2 8 bit, còn trên webGL thì sử dụng RGBA Crunched với quality 50. 
+=> Dung lương bản build dev game Pacman đã giảm từ 60Mb xuống còn 8.7Mb => Tuyệt vời. 
+- Vào trong manifest.json, xoá hết các dependencies mặc định hoặc ko dùng tới đi. 
+- Trong Player Setting khi build, chọn Code Optimization là Disk Size (Giảm size bản build). 
+
+- 1 Số link tham khảo khác để bổ sung thêm : 
+    + https://forum.unity.com/threads/webgl-builds-for-mobile.545877/page-2#post-9021013
+
+
 ## Tài liệu HỮU ÍCH : 
 - The Game Design Partterns:  https://www.theseus.fi/bitstream/handle/10024/150922/Rautakopra_Anni.pdf?sequence=1&isAllowed=y
 - Build BIG Game : https://www.youtube.com/watch?v=ECb31GwoSsM 
