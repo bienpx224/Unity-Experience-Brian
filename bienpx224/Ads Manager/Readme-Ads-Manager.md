@@ -21,5 +21,36 @@
 - Trong Editor thì việc xem video xong, call func nhận thưởng ở onRewardedVideoClosed hoạt động tốt. 
 Tuy nhiên khi thực chạy trên thiết bị Android thì khi quảng cáo bật lên, main thread của Unity sẽ bị pause lại, và khi video kết thúc thì đã thực hiện hàm nhận thưởng trước khi main thread được unpause -> có lỗi trên. 
 - Cách giải quyết : 
-Thêm biến check để đợi khi nào main thread hoạt động trở lại thì sẽ thực hiện nhận thưởng cũng như các actions khác. 
+Thêm biến check để đợi khi nào main thread hoạt động trở lại thì sẽ thực hiện nhận thưởng cũng như các actions khác.
+-> Cách này đã dc triển khai trong cuối file `AdsManager.cs` 
 - (Link issues in Unity forum)[https://forum.unity.com/threads/solved-bizarre-error-unityexception-get_gameobject-can-only-be-called-from-the-main-thread.539830/]
+
+## Kinh nghiệm setup show ads : 
+- Khoảng cách giữa các lần show ad inter liên tiếp là : ít nhất 30s tới 60s.
+
+
+## Lưu ý Khi tích hợp Google ads mà build bản Release cho Production : 
+- Khi build bản Release, sử dụng minify release mà ko custom Proguard thì khi build nó sẽ ko build các lib như gms, gms.ads, ump,...
+- Vậy nên khi build rồi chạy thì sẽ bị lỗi Exception ClassNotFound của các lib trên. 
+- Cách giải quyết : 
+    + Trong Project Settings > Publishing Setting > Chọn Custom Proguard : 
+    + Trong file proguard-user.txt đó thêm đoạn mã sau : 
+    ```c#
+        -keep class com.google.unity.** {
+   *;
+}
+-keep public class com.google.android.gms.ads.**{
+   public *;
+}
+-keep public class com.google.ads.**{
+   public *;
+}
+-keep public class com.google.ump.**{
+   public *;
+}
+-keepattributes *Annotation*
+-dontobfuscate
+    ```
+
+- Khi mở project ra hoặc chuyển sang branch build release, nên Force Resolve trước. Đã gặp TH ko Force Resolve, build vẫn bị proguard ignore.
+- Vậy là đã giải quyết xong. 

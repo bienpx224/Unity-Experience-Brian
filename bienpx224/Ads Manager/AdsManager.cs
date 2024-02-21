@@ -9,13 +9,17 @@ public class AdsManager : PersistentSingleton<AdsManager>
 {
     public string currentInterNet = "";
     public string currentVideoNet = "";
-
+    public Action<ShowResult> EligibleReward = null;
+    [SerializeField] private float lastTimeInterAdShowed = -50f;
+    [SerializeField] public bool unityAdsTestMode = true;
+    [SerializeField] public bool showAdmobAdsFirst = true;
     public void Start()
     {
-        LoadAd();
+        // LoadAd();
     }
     public void LoadAd()
     {
+        Debug.Log("=== Ads Manager Load Ad ()");
         Admobs.Instance.Setup();
         UnityAds.Instance.Setup();
         // AppLovin.Initialize();
@@ -38,12 +42,27 @@ public class AdsManager : PersistentSingleton<AdsManager>
     }
 
     Action callbackShowInterstitial;
-    public void ShowInterstitial(Action callback = null)
+    public void ShowInterstitial(Action callback = null, bool showAdmobBefore = true)
     {
         callbackShowInterstitial = callback;
+        /* Check just show ad if in some minutes before, not show ad yet.  */
+        if (Time.time - lastTimeInterAdShowed >= GameAdConfig.MIN_TIME_SHOW_NEXT_AD)
+        {
+            if (showAdmobBefore)
+            {
+                ShowAdmobInterstitialBefore();
+            }
+            else
+            {
+                ShowUnityInterstitialBefore();
+            }
 
-        ShowAdmobInterstitialBefore();
-
+            lastTimeInterAdShowed = Time.time;
+        }
+        else
+        {
+            callbackShowInterstitial?.Invoke();
+        }
     }
 
     public void ShowAdmobInterstitialBefore()
@@ -66,6 +85,7 @@ public class AdsManager : PersistentSingleton<AdsManager>
     {
         if (UnityAds.Instance.IsInterstitialAdLoaded())
         {
+            Debug.Log("ShowUnityInterstitialBefore Inter is loaded");
             HideBanner();
             UnityAds.Instance.ShowInterstitialAd(OnInterstitialCompleted);
             currentInterNet = GameAdConfig.UNITY;
@@ -80,7 +100,7 @@ public class AdsManager : PersistentSingleton<AdsManager>
 
     private void OnInterstitialCompleted()
     {
-        ShowBanner();
+        // ShowBanner();
         if (callbackShowInterstitial != null)
             callbackShowInterstitial();
     }
@@ -90,8 +110,8 @@ public class AdsManager : PersistentSingleton<AdsManager>
         return (Admobs.Instance.IsRewardedAdLoaded() || UnityAds.Instance.IsRewardedAdLoaded());
     }
 
-    Action callbackShowVideoReward;
-    public void ShowRewardAd(Action callback)
+    Action<ShowResult> callbackShowVideoReward;
+    public void ShowRewardAd(Action<ShowResult> callback)
     {
         if (CheckVideoRewardReady())
         {
@@ -107,7 +127,7 @@ public class AdsManager : PersistentSingleton<AdsManager>
         {
             case ShowResult.Finished:
                 if (callbackShowVideoReward != null)
-                    callbackShowVideoReward();
+                    callbackShowVideoReward(ShowResult.Finished);
                 break;
 
             case ShowResult.Skipped:
@@ -118,7 +138,14 @@ public class AdsManager : PersistentSingleton<AdsManager>
 
     public void ShowVideoReward(Action<ShowResult> callback)
     {
-        ShowRewardGoogleAdFirst(callback);
+        if (showAdmobAdsFirst)
+        {
+            ShowRewardGoogleAdFirst(callback);
+        }
+        else
+        {
+            ShowRewardUnityAdFirst(callback);
+        }
     }
 
     public void ShowRewardGoogleAdFirst(Action<ShowResult> callback)
@@ -153,5 +180,22 @@ public class AdsManager : PersistentSingleton<AdsManager>
         }
 
     }
+    
+    /* Nếu là trên Mobile, thì check Game hoạt động lại thì cho nhận thưởng ?
+     Để giải quyết lỗi google admob video ads : get_gameObject can only be called from the main thread
+     */
+    #if !UNITY_EDITOR
+    // Auto-called AFTER onRewardedVideoClosed is called. This method is documented on Unity website.
+     private void OnApplicationPause(bool pause)
+     {
+         if (EligibleReward != null && !pause)
+         {
+             
+             Debug.LogWarning("OnApplicationPause FALSE and resume reward");
+             EligibleReward.Invoke(ShowResult.Finished);
+             EligibleReward = null;
+         }
+     }
+    #endif
 }
 

@@ -9,7 +9,6 @@ using UnityEngine.Events;
 
 public class Admobs : PersistentSingleton<Admobs>
 {
-
     //private AppOpenAd appOpenAd;
     private BannerView bannerView;
     private InterstitialAd interstitialAd;
@@ -25,6 +24,11 @@ public class Admobs : PersistentSingleton<Admobs>
     Action<ShowResult> callbackRewardedAdClosed;
     bool hasReceivedRewardedAd;
 
+    private List<string> listTestDevice = new List<string>()
+    {
+        "a1f66998-1049-4b6b-b5da-3b52934a02ba"
+    };
+
     #region UNITY MONOBEHAVIOR METHODS
 
     public void Setup()
@@ -32,14 +36,18 @@ public class Admobs : PersistentSingleton<Admobs>
         MobileAds.SetiOSAppPauseOnBackground(true);
 
         List<string> deviceIds = new List<string>() { AdRequest.TestDeviceSimulator };
-
-        deviceIds.Add("");
+        foreach (string s in listTestDevice)
+        {
+            deviceIds.Add(s);
+        }
 
         // Configure TagForChildDirectedTreatment and test device IDs.
         RequestConfiguration requestConfiguration =
             new RequestConfiguration.Builder()
-            .SetTagForChildDirectedTreatment(TagForChildDirectedTreatment.Unspecified)
-            .SetTestDeviceIds(deviceIds).build();
+                .SetTagForChildDirectedTreatment(TagForChildDirectedTreatment.False)
+                .SetTagForUnderAgeOfConsent(TagForUnderAgeOfConsent.False)
+                .SetMaxAdContentRating(MaxAdContentRating.T)
+                .SetTestDeviceIds(deviceIds).build();
         MobileAds.SetRequestConfiguration(requestConfiguration);
 
         // Initialize the Google Mobile Ads SDK.
@@ -48,12 +56,15 @@ public class Admobs : PersistentSingleton<Admobs>
 
     private void HandleInitCompleteAction(InitializationStatus initstatus)
     {
+        Toast.Show("Load success");
+        Debug.Log("HandleInitCompleteAction : ");
         // Callbacks from GoogleMobileAds are not guaranteed to be called on
         // main thread.
         // In this example we use MobileAdsEventExecutor to schedule these calls on
         // the next Update() loop.
         MobileAdsEventExecutor.ExecuteInUpdate(() =>
         {
+            Debug.Log("Execute Update : HandleInitCompleteAction : " + initstatus);
 #if BANNER_ON
             RequestBannerAd();
 #endif
@@ -65,12 +76,11 @@ public class Admobs : PersistentSingleton<Admobs>
 
     private void Update()
     {
-
     }
 
-#endregion
+    #endregion
 
-#region HELPER METHODS
+    #region HELPER METHODS
 
     private AdRequest CreateAdRequest()
     {
@@ -80,9 +90,9 @@ public class Admobs : PersistentSingleton<Admobs>
         return new AdRequest();
     }
 
-#endregion
+    #endregion
 
-#region BANNER ADS
+    #region BANNER ADS
 
     public void ShowBannerAd()
     {
@@ -107,16 +117,19 @@ public class Admobs : PersistentSingleton<Admobs>
         }
 
         // Create a 320x50 banner at top of the screen
-        bannerView = new BannerView(adUnitId, AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth), AdPosition.Bottom);
+        bannerView = new BannerView(adUnitId,
+            AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth), AdPosition.Bottom);
 
         // Add Event Handlers
         bannerView.OnBannerAdLoaded += OnBannerLoaded;
         bannerView.OnBannerAdLoadFailed += OnBannerFailedToLoad;
 
         // Load a banner ad
-        bannerView.LoadAd( CreateAdRequest());
+        bannerView.LoadAd(CreateAdRequest());
     }
-#region Banner Event
+
+    #region Banner Event
+
     private void OnBannerLoaded()
     {
         numReqBanner = 0;
@@ -136,7 +149,8 @@ public class Admobs : PersistentSingleton<Admobs>
         yield return new WaitForSecondsRealtime(GameAdConfig.TIME_RELOAD_BANNER);
         RequestBannerAd();
     }
-#endregion
+
+    #endregion
 
     public void DestroyBannerAd()
     {
@@ -146,13 +160,12 @@ public class Admobs : PersistentSingleton<Admobs>
         }
     }
 
-#endregion
+    #endregion
 
-#region INTERSTITIAL ADS
+    #region INTERSTITIAL ADS
 
     public void RequestAndLoadInterstitialAd()
     {
-
         string adUnitId = GameAdConfig.INTER_ADMOB;
 
         // Clean up interstitial before using it
@@ -174,6 +187,7 @@ public class Admobs : PersistentSingleton<Admobs>
             Debug.LogError("Interstitial ad failed to load an ad with error : " + error);
             return;
         }
+
         // If the operation failed for unknown reasons.
         // This is an unexpected error, please report this bug if it happens.
         if (ad == null)
@@ -190,6 +204,7 @@ public class Admobs : PersistentSingleton<Admobs>
         RegisterEventHandlersInterAd(ad);
         numReqInter = 0;
     }
+
     private void RegisterEventHandlersInterAd(InterstitialAd ad)
     {
         // Raised when the ad is estimated to have earned money.
@@ -200,30 +215,23 @@ public class Admobs : PersistentSingleton<Admobs>
                 adValue.CurrencyCode));
         };
         // Raised when an impression is recorded for an ad.
-        ad.OnAdImpressionRecorded += () =>
-        {
-            Debug.Log("Interstitial ad recorded an impression.");
-        };
+        ad.OnAdImpressionRecorded += () => { Debug.Log("Interstitial ad recorded an impression."); };
         // Raised when a click is recorded for an ad.
-        ad.OnAdClicked += () =>
-        {
-            Debug.Log("Interstitial ad was clicked.");
-        };
+        ad.OnAdClicked += () => { Debug.Log("Interstitial ad was clicked."); };
         // Raised when an ad opened full screen content.
-        ad.OnAdFullScreenContentOpened += () =>
-        {
-            Debug.Log("Interstitial ad full screen content opened.");
-        };
+        ad.OnAdFullScreenContentOpened += () => { Debug.Log("Interstitial ad full screen content opened."); };
         // Raised when the ad closed full screen content.
         ad.OnAdFullScreenContentClosed += () =>
         {
             Debug.Log("Interstitial ad full screen content closed.");
+            OnInterAdClosed();
         };
         // Raised when the ad failed to open full screen content.
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
             Debug.LogError("Interstitial ad failed to open full screen content with error : "
                            + error);
+            OnInterAdClosed();
         };
     }
 
@@ -234,7 +242,6 @@ public class Admobs : PersistentSingleton<Admobs>
             numReqInter++;
             StartCoroutine(IEReloadInterAd());
         }
-
     }
 
     IEnumerator IEReloadInterAd()
@@ -273,15 +280,14 @@ public class Admobs : PersistentSingleton<Admobs>
         }
     }
 
-#endregion
+    #endregion
 
-#region REWARDED ADS
+    #region REWARDED ADS
 
     public void RequestAndLoadRewardedAd()
     {
-
         string adUnitId = GameAdConfig.VIDEO_ADMOB;
-        
+
         // Clean up the old ad before loading a new one.
         if (rewardedAd != null)
         {
@@ -302,6 +308,7 @@ public class Admobs : PersistentSingleton<Admobs>
                 Debug.LogError("Rewarded ad failed to load an ad with error : " + error);
                 return;
             }
+
             // If the operation failed for unknown reasons.
             // This is an unexpected error, please report this bug if it happens.
             if (ad == null)
@@ -316,9 +323,9 @@ public class Admobs : PersistentSingleton<Admobs>
 
             // Register to ad events to extend functionality.
             RegisterEventHandlersRewardAd(ad);
-
         });
     }
+
     public void DestroyRewardAd()
     {
         if (rewardedAd != null)
@@ -396,7 +403,12 @@ public class Admobs : PersistentSingleton<Admobs>
                 Debug.Log(String.Format("Rewarded ad granted a reward: {0} {1}",
                     reward.Amount,
                     reward.Type));
+
+#if UNITY_EDITOR
                 callbackRewardedAdClosed(ShowResult.Finished);
+#else
+                AdsManager.Instance.EligibleReward = callback;
+#endif
                 /* Request load for an other reward ad for next time */
                 RequestAndLoadRewardedAd();
             });
@@ -406,6 +418,7 @@ public class Admobs : PersistentSingleton<Admobs>
             RequestAndLoadRewardedAd();
         }
     }
+
     private void RegisterEventHandlersRewardAd(RewardedAd ad)
     {
         // Raised when the ad is estimated to have earned money.
@@ -416,25 +429,13 @@ public class Admobs : PersistentSingleton<Admobs>
                 adValue.CurrencyCode));
         };
         // Raised when an impression is recorded for an ad.
-        ad.OnAdImpressionRecorded += () =>
-        {
-            Debug.Log("Rewarded ad recorded an impression.");
-        };
+        ad.OnAdImpressionRecorded += () => { Debug.Log("Rewarded ad recorded an impression."); };
         // Raised when a click is recorded for an ad.
-        ad.OnAdClicked += () =>
-        {
-            Debug.Log("Rewarded ad was clicked.");
-        };
+        ad.OnAdClicked += () => { Debug.Log("Rewarded ad was clicked."); };
         // Raised when the ad opened full screen content.
-        ad.OnAdFullScreenContentOpened += () =>
-        {
-            Debug.Log("Rewarded ad full screen content opened.");
-        };
+        ad.OnAdFullScreenContentOpened += () => { Debug.Log("Rewarded ad full screen content opened."); };
         // Raised when the ad closed full screen content.
-        ad.OnAdFullScreenContentClosed += () =>
-        {
-            Debug.Log("Rewarded ad full screen content closed.");
-        };
+        ad.OnAdFullScreenContentClosed += () => { Debug.Log("Rewarded ad full screen content closed."); };
         // Raised when the ad failed to open full screen content.
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
@@ -444,14 +445,12 @@ public class Admobs : PersistentSingleton<Admobs>
         };
     }
 
+    #endregion
 
-#endregion
-
-#region APPOPEN ADS
+    #region APPOPEN ADS
 
     public void RequestAndLoadAppOpenAd()
     {
-
         string adUnitId = "unused";
 
         // create new app open ad instance
@@ -541,7 +540,5 @@ public class Admobs : PersistentSingleton<Admobs>
         //appOpenAd.Show();
     }
 
-#endregion
-
-
+    #endregion
 }

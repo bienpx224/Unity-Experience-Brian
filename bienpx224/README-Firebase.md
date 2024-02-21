@@ -32,3 +32,14 @@ public static void PushEventRoom(string eventName, int chapterId, int levelId, i
     }
 ```
 
+## Firebase DLL bị nặng, ko đẩy lên git được : 
+- Khi start 1 dự án có sử dụng firebase, import thư viện firebase, sẽ có 1 số file DLL trong folder Assets/Firebase/Plugins/ 
+- Nếu ko muốn sử dụng Git Large Files để đấy những file này lên thì hãy ignore nó đi. 
+- Và khi import, mở dự án ở 1 nơi khác chưa có chúng, thì import lại Firebase vào là được. 
+
+## Import Firebase .bundle bị lỗi ko open được : 
+- Khi import Firebase vào dự án, Run dự án bị báo lỗi OS ko chạy file .bundle và yêu cầu xoá nó đi
+- Ta import lại Firebase. Vào Assets/Firebase/Plugins > Mở firebase.bundle đó trong VSCode. 
+- Sau đó vào game chạy lại thì thấy đã thành công, push được firebase, ko còn hiện lỗi nữa. 
+- Nêú vào game chạy vẫn bị báo lỗi ko open dc dc .bundle thì cancel Popup đó, rồi vào MacOS Setting > Privacy > scroll to end and Allow Anyway for this .bundle file.
+

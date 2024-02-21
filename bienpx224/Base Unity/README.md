@@ -62,6 +62,11 @@ Both the ref and in require the parameter to have been initialized before being 
 
 ## Phân biệt giữa event, delegate, action, unity event : 
 - Link refers : https://gamedevbeginner.com/events-and-delegates-in-unity/
+- https://toidicodedao.com/2015/02/10/series-c-hay-ho-callback-trong-c-delegate-action-predicate-func/
+
+- Action: Action<T in1, T in2, …>. Action tương đương 1 delegate với kiểu trả về là void, với in1, in2 là các params nhận vào.
+- Predicate: Predicate<T in>. Predicate tương đương 1 delegate với kiểu trả về là bool, với in là các param nhận vào. Predicate chỉ có thể nhận vào 1 param duy nhất.
+- Func: Func<T in1, T in2, … , T result>. Function tương đương 1 delegate với kiểu trả về do ta khai báo (result), in1, in2 là các params nhận vào. Func bắt buộc phải trả ra giá trị, không thể trả void.
 
 ## Hướng dẫn dùng delegate
 *** Hướng dẫn dùng delegate : 
