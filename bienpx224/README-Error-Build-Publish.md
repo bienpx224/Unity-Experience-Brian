@@ -94,3 +94,27 @@ If using custom web server, verify that web server is sending .br files with HTT
 
 - Resolved : 
 To fix this issue go to files>build settings>player settings>Publishing settings and from there just turn on "Decompression Fallback" option and create a webGL build again and it should work properly over local server or any server you will upload your project
+
+## Unity build dự án cho IOS, run bằng Xcode bị lỗi, ko có file .xcworkspace : 
+- Khi mở bằng file .xcodeproj  Có thể bị lỗi mở lên ko có cocoapods, hoặc archive/run thì bị lỗi gì đó. 
+- Dự án build ra không có file .xcworkspace : Ta cần chạy pod update để cài đặt sinh ra file này . 
+
+- Để cho chắc , chạy lần lượt các terminal sau tại folder builds đó : 
+    + sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+    + gem install cocoapods --user-install
+    + sudo gem install cocoapods
+    + pod update
+- Sau đó thì trong folder build sẽ có file .xcworkspace, ấn mở file này bằng Xcode. 
+- Sau đó tuỳ chỉnh như bình thường, ấn archive//run dự án. 
+
+## Unity build trên Xcode, chạy archive bị lỗi `Invalid Bundle. The bundle at 'HeroOfLighthalzen.app/Frameworks/UnityFramework.framework' contains disallowed file 'Frameworks'.`
+- [Link hướng dẫn](https://stackoverflow.com/questions/73902406/unityframework-framework-contains-disallowed-file-frameworks-getting-this-err)
+
+- Các bước : 
+Click on Unity-iPhone project
+Click on the UnityFramework Target
+Click on the Build Settings
+Search for "swift"
+Set the "Always Embed Swift Standard Libraries" option to "No"
+
+

@@ -54,3 +54,10 @@ Thêm biến check để đợi khi nào main thread hoạt động trở lại 
 
 - Khi mở project ra hoặc chuyển sang branch build release, nên Force Resolve trước. Đã gặp TH ko Force Resolve, build vẫn bị proguard ignore.
 - Vậy là đã giải quyết xong. 
+
+
+## Unity admob show trên Iphone game bị pause, hết ads vẫn không resume lại : 
+- Khi show ads, trên Android sẽ pause game lại, kết thúc ads thì resume. Còn trên Iphone thì không. Muốn pause game khi show ad thì cần `MobileAds.SetiOSAppPauseOnBackground(true);` khi init Admob. 
+Và trên Iphone cần thêm đoạn chỉnh `Time.timeScale = 1` khi ads đã bị tắt đi hoặc trong OnApplicationPause. 
+
+[Link](https://discussions.unity.com/t/interstitial-pause-game-on-android-but-not-on-ios/195399/6)
