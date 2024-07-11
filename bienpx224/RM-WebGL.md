@@ -1,5 +1,8 @@
 # Unity vs WebGL 
 
+## Lưu ý : 
+- Không sử dụng Async/Await Task.Delay trong dự án build ra WebGL
+- That is System.Threading. You cannot use System.Threading on WebGL (yet)
 ## Unity tương tác với ReactJS phía web sau khi build ra WebGL :
 - Sử dụng package npm (react-unity-webgl)[https://www.npmjs.com/package/react-unity-webgl]
 ### Phía Unity : 

@@ -118,3 +118,9 @@ Search for "swift"
 Set the "Always Embed Swift Standard Libraries" option to "No"
 
 
+## Build Unity cho Android : lỗi > 1 exception was raised by workers:
+  java.lang.RuntimeException: java.lang.RuntimeException: com.android.ide.common.signing.KeytoolException: Failed to read key samsungstore from store
+
+  - Bị sai password của keystore. 
+
+

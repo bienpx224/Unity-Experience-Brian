@@ -34,7 +34,8 @@ public static void PushEventRoom(string eventName, int chapterId, int levelId, i
 
 ## Firebase DLL bị nặng, ko đẩy lên git được : 
 - Khi start 1 dự án có sử dụng firebase, import thư viện firebase, sẽ có 1 số file DLL trong folder Assets/Firebase/Plugins/ 
-- Nếu ko muốn sử dụng Git Large Files để đấy những file này lên thì hãy ignore nó đi. 
+- Nếu ko muốn sử dụng Git Large Files để đấy những file này lên thì hãy ignore nó đi.
+- Muốn ignore file nặng này, mở .gitignore lên và thêm `/Assets/Firebase/Plugins/x86_64/` vào cuối file là được. 
 - Và khi import, mở dự án ở 1 nơi khác chưa có chúng, thì import lại Firebase vào là được. 
 
 ## Import Firebase .bundle bị lỗi ko open được : 
