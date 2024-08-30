@@ -75,6 +75,8 @@ Xoá comment, thêm android:exported="true"....
     + Lỗi này bị với Unity 2022.1 and earlier
     + Sau đó build lại là được. 
 
+- Đối với các version Unity khác mới hơn thì sử dụng ADmob Unity Version mới nhất thoải mái, setup mặc định. 
+
 ## Build WebGL : Interacting with JS Web Client : 
 - Error when build : Error building WebGL in 2021.2.5f1 - ebug_WebGL_wasm\build.js: undefined symbol
 
@@ -109,6 +111,8 @@ To fix this issue go to files>build settings>player settings>Publishing settings
 
 ## Unity build trên Xcode, chạy archive bị lỗi `Invalid Bundle. The bundle at 'HeroOfLighthalzen.app/Frameworks/UnityFramework.framework' contains disallowed file 'Frameworks'.`
 - [Link hướng dẫn](https://stackoverflow.com/questions/73902406/unityframework-framework-contains-disallowed-file-frameworks-getting-this-err)
+- Chi tiết lỗi : Invalid Bundle. The bundle at 'ToiletRushTroll.app/Frameworks/UnityFramework.framework' contains disallowed file 'Frameworks' 
+
 
 - Các bước : 
 Click on Unity-iPhone project
