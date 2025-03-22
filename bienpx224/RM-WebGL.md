@@ -42,6 +42,8 @@
     #endregion
 ```
 - Tạo 1 file React.jslib trong Asset/Plugins/ : 
+*** Lưu ý : Nếu ko tạo file define các func này trong Assets > Plugins > React.jsLib thì khi build ra webGL sẽ bị lỗi. 
+
 ```jslib
 mergeInto(LibraryManager.library, {
   UnitySayHelloToWeb: function (msg) {

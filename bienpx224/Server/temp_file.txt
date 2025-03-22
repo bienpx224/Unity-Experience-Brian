@@ -1,0 +1,45 @@
+cp /etc/nginx/sites-available/game.gamingcenter.top /etc/nginx/sites-available/n8n.gamingcenter.top
+
+server {
+    server_name dev.miniapp.api.cyberfans.ai;
+
+    location / {
+        proxy_pass http://localhost:80;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
+    # listen 443 ssl; # managed by Certbot
+    # ssl_certificate /etc/letsencrypt/live/dev.miniapp.api.cyberfans.ai/fullchain.pem; #>
+    # ssl_certificate_key /etc/letsencrypt/live/dev.miniapp.api.cyberfans.ai/privkey.pem;>
+    # include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    # ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = dev.miniapp.api.cyberfans.ai) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name dev.miniapp.api.cyberfans.ai;
+    return 404; # managed by Certbot
+
+
+}
+
+
+sudo ln -s /etc/nginx/sites-available/dev.miniapp.api.cyberfans.ai /etc/nginx/sites-enabled/
+
+Câu lệnh cài đặt certbot trên ubuntu : 
+sudo apt-get update
+sudo apt-get install certbot python3-certbot-nginx
+
+sudo certbot --nginx -d dev.miniapp.api.cyberfans.ai

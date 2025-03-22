@@ -11,7 +11,7 @@
     + Ip 6"7 - 1920 x 2796  (iPhone 12 Pro Max, iPhone 13 Pro Max, và iPhone 14 Pro Max.)
     + Ipad 2048 x 2732  ( iPad Pro 12.9 inch)
 - Android : Chỉ cần dùng 1 bộ ảnh Ip 5"5 : 1242 x 2208 của Apple là được. 
-    + Cần thêm 1 ảnh Feature kích thước : 1024 x 512 
+    + Cần thêm 1 ảnh Feature kích thước : 1024 x 500
 
 ## Tạo Admob - Firebase : 
 - Đặt tên ứng dụng giống nhau, lên firebase tạo cho Android và IOS. 
