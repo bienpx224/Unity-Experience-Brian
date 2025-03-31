@@ -1,0 +1,36 @@
+services:
+  mongo1:
+    image: mongo
+    restart: always
+    container_name: mongo1
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./:/scripts
+    networks:
+      - mongo
+    command: mongod --port 27017 --replSet rs0 --bind_ip 0.0.0.0
+
+  mongo2:
+    image: mongo
+    restart: always
+    container_name: mongo2
+    ports:
+      - "27018:27017"
+    networks:
+      - mongo
+    command: mongod --port 27017 --replSet rs0 --bind_ip 0.0.0.0
+
+  mongo3:
+    image: mongo
+    restart: always
+    container_name: mongo3
+    ports:
+      - "27019:27017"
+    networks:
+      - mongo
+    command: mongod --port 27017 --replSet rs0 --bind_ip 0.0.0.0
+
+networks:
+  mongo:
+    driver: bridge

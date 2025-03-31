@@ -77,10 +77,13 @@ nvm use 22
 - Sau khi chỉnh xong, thực hiện tiến hành cho dự án chạy trên port đó như bình thường. 
 - Thực hiện mở port bằng UFW : 
 ```sh
+## Port ssh rất quan trọng cần mở đầu tiên trước khi enable firewall, nếu không sẽ không ssh vào dc. 
+sudo ufw allow 22 
 # Kích hoạt Firewall : 
 sudo ufw enable
 
 # Mở các port cần sử dụng trong hệ thống
+
 sudo ufw allow 27017/tcp
 sudo ufw allow 4xxx/tcp
 
