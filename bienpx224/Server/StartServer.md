@@ -266,3 +266,25 @@ mongodb://[user]:[pass]@[ip]:27017/?authSource=admin
 MONGODB_URI=mongodb://admin:pass@127.0.0.1:27017/tên_database?authSource=admin
 ```
 
+## Các thao tác với ufw : 
+
+```sh
+
+# Câu lệnh kiểm tra :
+sudo ufw status 
+
+# câu lệnh mở port : 
+sudo ufw allow 4000/tcp 
+
+# Câu lệnh chặn truy cập từ bên ngoài vào qua port : 
+sudo ufw deny 27017/tcp
+
+# Câu lệnh để allow ip truy cập vào port 27017 là gì : 
+sudo ufw allow from 1.52.234.209 to any port 27017
+
+# Cấu hình firewall để chỉ cho phép truy cập từ máy chủ cục bộ
+  sudo ufw allow from 127.0.0.1 to any port 27017
+  sudo ufw allow from 127.0.0.1 to any port 27018
+  sudo ufw allow from 127.0.0.1 to any port 27019
+
+```

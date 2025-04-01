@@ -4,16 +4,17 @@ services:
   mongo1:
     image: mongo:latest
     container_name: mongo1
-    command: mongod --replSet rs0 --bind_ip_all
+    command: mongod --replSet rs0 --bind_ip_all --keyFile /opt/keyfile/mongo-keyfile --auth
     ports:
       - "27017:27017"
     volumes:
       - ./data/mongo1:/data/db
       - ./scripts:/scripts
+      - ./keyfile:/opt/keyfile
     networks:
       - mongo_network
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      test: mongosh --port 27017 -u bienpx -p 3MCr09mTRq9NOWdhdwgf --authenticationDatabase admin --eval "db.adminCommand('ping').ok" --quiet | grep 1
       interval: 10s
       timeout: 10s
       retries: 5
@@ -22,15 +23,16 @@ services:
   mongo2:
     image: mongo:latest
     container_name: mongo2
-    command: mongod --replSet rs0 --bind_ip_all
+    command: mongod --replSet rs0 --bind_ip_all --keyFile /opt/keyfile/mongo-keyfile --auth
     ports:
       - "27018:27017"
     volumes:
       - ./data/mongo2:/data/db
+      - ./keyfile:/opt/keyfile
     networks:
       - mongo_network
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      test: mongosh --port 27018 -u bienpx -p 3MCr09mTRq9NOWdhdwgf --authenticationDatabase admin --eval "db.adminCommand('ping').ok" --quiet | grep 1
       interval: 10s
       timeout: 10s
       retries: 5
@@ -39,15 +41,16 @@ services:
   mongo3:
     image: mongo:latest
     container_name: mongo3
-    command: mongod --replSet rs0 --bind_ip_all
+    command: mongod --replSet rs0 --bind_ip_all --keyFile /opt/keyfile/mongo-keyfile --auth
     ports:
       - "27019:27017"
     volumes:
       - ./data/mongo3:/data/db
+      - ./keyfile:/opt/keyfile
     networks:
       - mongo_network
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      test: mongosh --port 27019 -u bienpx -p 3MCr09mTRq9NOWdhdwgf --authenticationDatabase admin --eval "db.adminCommand('ping').ok" --quiet | grep 1
       interval: 10s
       timeout: 10s
       retries: 5

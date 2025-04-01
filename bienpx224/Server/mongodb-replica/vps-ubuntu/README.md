@@ -1,143 +1,187 @@
-# MongoDB Replica Set
+# MongoDB Replica Set (Cluster) trên Docker
 
-Hướng dẫn thiết lập MongoDB Replica Set với 3 node và xác thực.
+Hướng dẫn thiết lập MongoDB Replica Set sử dụng Docker để triển khai trên môi trường VPS hoặc máy tính cá nhân.
 
-## Yêu cầu
+## Tổng quan
 
-- Docker và Docker Compose
-- Quyền thực thi các script shell
+Dự án này tạo một MongoDB Replica Set gồm 3 node với khả năng chịu lỗi cao. Cấu hình bao gồm:
 
-## Cách sử dụng nhanh (Khuyến nghị)
+- 3 container MongoDB tạo thành Replica Set
+- Xác thực nội bộ giữa các node với keyFile
+- Xác thực người dùng với tài khoản admin
+- Tường lửa UFW để bảo vệ các cổng MongoDB
 
-0. Stop và Remove container mongo cũ trong docker nếu có cho chắc : 
-```sh
-# Liệt kê các container đang chạy
-docker ps
+## Yêu cầu trước khi cài đặt
 
-# Dừng container MongoDB standalone
-docker stop <container_id_hoặc_tên>
+- Docker và Docker Compose đã được cài đặt
+- Ubuntu hoặc hệ điều hành Linux tương tự
+- Quyền sudo để cấu hình tường lửa
+- Các cổng 27017, 27018, 27019 chưa được sử dụng
 
-# Xóa container MongoDB standalone
-docker rm <container_id_hoặc_tên>
+## Cấu trúc thư mục
+
+```
+.
+├── docker-compose.yml          # Cấu hình Docker Compose không có xác thực
+├── docker-compose-secure.yml   # Cấu hình Docker Compose với xác thực
+├── setup.sh                    # Script thiết lập tự động
+├── data/                       # Thư mục chứa dữ liệu MongoDB
+│   ├── mongo1/
+│   ├── mongo2/
+│   └── mongo3/
+├── keyfile/                    # Chứa keyfile cho xác thực nội bộ
+└── scripts/                    # Scripts để khởi tạo replica set
+    ├── init-replica.js         # Script khởi tạo replica set
+    └── auth-setup.js           # Script kiểm tra xác thực
 ```
 
-1. Chạy lệnh sau để khởi động MongoDB Replica Set và tạo user admin:
+## Hướng dẫn cài đặt
+
+1. Clone repository này vào máy chủ hoặc VPS của bạn
+2. Cấp quyền thực thi cho file setup.sh:
+
+   ```bash
+   chmod +x setup.sh
+   ```
+
+3. Chạy script cài đặt:
+
+   ```bash
+   sudo ./setup.sh
+   ```
+
+4. Script sẽ tự động:
+   - Tạo cấu trúc thư mục cần thiết
+   - Tạo keyFile cho xác thực nội bộ
+   - Khởi động các container MongoDB
+   - Khởi tạo replica set
+   - Tạo các tài khoản người dùng
+   - Khởi động lại với xác thực
+   - Cấu hình tường lửa UFW
+
+## Sử dụng
+
+### Kết nối từ ứng dụng
+
+Sử dụng connection string sau để kết nối từ ứng dụng của bạn:
+
+```
+mongodb://remote_user:3MCr09mTRq9NOWdhdwgf@SERVER_IP:27017,SERVER_IP:27018,SERVER_IP:27019/?replicaSet=rs0&authSource=admin
+```
+
+Thay `SERVER_IP` bằng địa chỉ IP thực của máy chủ.
+
+### Kết nối qua MongoDB Compass
+
+1. Mở MongoDB Compass
+2. Dán connection string sau:
+
+```
+mongodb://remote_user:3MCr09mTRq9NOWdhdwgf@SERVER_IP:27017,SERVER_IP:27018,SERVER_IP:27019/?replicaSet=rs0&authSource=admin
+```
+
+Thay `SERVER_IP` bằng địa chỉ IP thực của máy chủ.
+
+### Truy cập qua CLI
 
 ```bash
-cd mongodb-replica
-sudo chmod +x init-replica.sh
-./init-replica.sh
+# Truy cập vào MongoDB shell
+docker exec -it mongo1 mongosh -u bienpx -p 3MCr09mTRq9NOWdhdwgf --authenticationDatabase admin
 
-# Thực hiện mở port : 
-sudo ufw allow 27017/tcp
-sudo ufw allow 27018/tcp
-sudo ufw allow 27019/tcp
+# Kiểm tra trạng thái replica set
+rs.status()
 
-# Cài thêm mongosh vào hệ thống : 
-# Thêm kho lưu trữ MongoDB
-wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | sudo apt-key add -
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
-
-# Cập nhật và cài đặt mongosh
-sudo apt update
-sudo apt install -y mongodb-mongosh
-
-# Kiểm tra cài đặt
-mongosh --version
+# Hiển thị danh sách database
+show dbs
 ```
 
-2. Replica Set sẽ được thiết lập với:
-   - 3 node: mongo1, mongo2, mongo3
-   - User admin được tạo với thông tin:
-     - Username: admin
-     - Password: abcd1234
+## Bảo mật
 
-3. Kết nối tới MongoDB Replica Set:
+### Thông tin xác thực mặc định
 
-```
-mongodb://admin:abcd1234@localhost:27017,localhost:27018,localhost:27019/?replicaSet=rs0&authSource=admin
-```
+- Admin User: `bienpx`
+- Admin Password: `3MCr09mTRq9NOWdhdwgf`
+- Remote User: `remote_user`
+- Remote Password: `3MCr09mTRq9NOWdhdwgf`
 
-## Kiểm tra kết nối
+**Lưu ý**: Trong môi trường sản xuất, bạn nên thay đổi mật khẩu mặc định.
 
-Để kiểm tra kết nối từ máy host:
+### Tường lửa UFW
+
+Script tự động cấu hình tường lửa UFW để chỉ cho phép:
+- Truy cập SSH (cổng 22)
+- Truy cập localhost tới MongoDB (127.0.0.1 → cổng 27017, 27018, 27019)
+- Truy cập từ IP của máy chủ tới các cổng MongoDB
+
+## Quản lý
+
+### Khởi động/dừng cluster
 
 ```bash
-sudo chmod +x test-connection-uri.sh
-./test-connection-uri.sh
+# Dừng cluster
+docker-compose -f docker-compose-secure.yml down
+
+# Khởi động lại cluster
+docker-compose -f docker-compose-secure.yml up -d
 ```
 
-Script này sẽ thử kết nối tới MongoDB Replica Set với 3 cách khác nhau:
-1. Không xác thực (sẽ thất bại nếu xác thực đã được bật)
-2. Kết nối với xác thực vào 1 node
-3. Kết nối vào replica set đầy đủ
-
-## Kiểm tra connect vào mongo và truy vấn : 
-```sh
-sudo chmod +x test-connection.js
-
-mongosh "mongodb://admin:abcd1234@194.62.166.157:27017,194.62.166.157:27018,194.62.166.157:27019/?replicaSet=rs0&authSource=admin" --file test-connection.js
-```
-
-
-
-
-
-
-
-## Thực hiện thủ công (Không cần xem tới) : 
-
-Nếu muốn thực hiện từng bước thủ công:
-
-0. Kiểm tra xoá các mongo container trong docker : 
-- Trong trường hợp trước đó tôi có tạo mongo chạy trên docker (bản standardalone) : 
-
-1. Khởi động các container:
-```bash
-cd mongodb-replica
-docker-compose up -d
-```
-
-2. Khởi tạo Replica Set và tạo user admin:
-```bash
-docker exec -it mongo1 mongosh --file /scripts/setup-mongo.js
-```
-
-3. Kiểm tra trạng thái Replica Set:
-```bash
-docker exec -it mongo1 mongosh --eval "rs.status()"
-```
-
-4. Kiểm tra user admin đã được tạo:
-```bash
-docker exec -it mongo1 mongosh --eval "db.getSiblingDB('admin').getUsers()"
-```
-
-## Dừng và xóa Replica Set
+### Kiểm tra logs
 
 ```bash
-cd mongodb-replica
-docker-compose down
+# Xem logs của tất cả các container
+docker-compose -f docker-compose-secure.yml logs
+
+# Xem logs của một container cụ thể
+docker logs mongo1
 ```
 
-## Khắc phục lỗi kết nối
+### Sao lưu dữ liệu
 
-Nếu bạn gặp lỗi "getaddrinfo ENOTFOUND mongo1" khi kết nối từ Mongo Compass hoặc các ứng dụng khác, hãy sử dụng connection string với localhost:
+Hệ thống đã được tích hợp tính năng sao lưu tự động với chu kỳ lưu trữ 7 ngày gần nhất.
 
-```
-mongodb://admin:abcd1234@localhost:27017,localhost:27018,localhost:27019/?replicaSet=rs0&authSource=admin
-```
+#### Thiết lập backup tự động
 
-## Lỗi "Authentication failed"
+Chạy script sau để thiết lập cron job backup tự động hàng ngày:
 
-Nếu bạn gặp lỗi "Authentication failed" khi kết nối bằng Mongo Compass, có thể do:
-
-1. User admin chưa được tạo thành công. Kiểm tra bằng lệnh:
 ```bash
-docker exec -it mongo1 mongosh --eval "db.getSiblingDB('admin').getUsers()"
+chmod +x setup-backup-cron.sh scripts/backup.sh scripts/restore.sh
+sudo ./setup-backup-cron.sh
 ```
 
-2. Chạy lại toàn bộ quá trình:
+Sau khi thiết lập, MongoDB sẽ được sao lưu vào lúc 1:00 AM mỗi ngày.
+
+#### Chạy sao lưu thủ công
+
 ```bash
-./init-replica.sh
-``` 
+./scripts/backup.sh
+```
+
+#### Khôi phục dữ liệu từ bản sao lưu
+
+```bash
+./scripts/restore.sh <tên_thư_mục_backup>
+```
+
+Ví dụ:
+```bash
+./scripts/restore.sh mongo-backup-20230401-120000
+```
+
+#### Kiểm tra các bản sao lưu hiện có
+
+```bash
+ls -lt backup | grep mongo-backup
+```
+
+#### Xem nhật ký sao lưu
+
+```bash
+tail -f backup/backup.log
+```
+
+Dữ liệu MongoDB cũng được lưu trong thư mục `./data`. Bạn có thể thủ công sao lưu thư mục này để bảo vệ dữ liệu của mình.
+
+## Tham khảo
+
+Dựa trên hướng dẫn chính thức từ MongoDB:
+[Deploying a MongoDB Cluster with Docker](https://www.mongodb.com/resources/products/compatibilities/deploying-a-mongodb-cluster-with-docker) 
